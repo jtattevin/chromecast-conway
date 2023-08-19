@@ -1,0 +1,128 @@
+<html>
+
+<head>
+  <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+</head>
+
+<body style="color: white">
+  <cast-media-player></cast-media-player>
+  <script>
+    cast.framework.CastReceiverContext.getInstance().start();
+  </script>
+
+
+
+  <!-- <div>Hello World</div>
+  <div id="message"></div>
+   -->
+  <script>
+    // const context = cast.framework.CastReceiverContext.getInstance();
+    // context.addCustomMessageListener('urn:x-cast:ch.cimnine.cromecast-test.text', function (customEvent) {
+    //   if (customEvent.data.type == "message") {
+    //     document.getElementById("message").innerHTML = customEvent.data.text;
+    //   }
+    // });
+    // context.start();
+  </script>
+
+
+  <div id="grid"></div>
+  <script>
+    const targetSize = 30;
+    const colCount = Math.round(document.body.clientWidth / targetSize);
+    const rowCount = Math.round(document.body.clientHeight / targetSize);
+
+    for (let row = 0; row < rowCount; row++) {
+      let rowDiv = document.createElement("div");
+      rowDiv.classList.add("row");
+      for (let col = 0; col < colCount; col++) {
+        let cellDiv = document.createElement("div");
+        cellDiv.classList.add("cell");
+        cellDiv.dataset.newState = Math.round(Math.random());
+        cellDiv.dataset.oldState = Math.round(Math.random());
+        cellDiv.dataset.row = row;
+        cellDiv.dataset.col = col;
+        rowDiv.appendChild(cellDiv)
+      }
+      document.querySelector("#grid").appendChild(rowDiv);
+    }
+
+    function defineNewState() {
+      document.querySelectorAll(".cell").forEach(function (cell) {
+        const row = parseInt(cell.dataset.row, 10);
+        const col = parseInt(cell.dataset.col, 10);
+        const currentState = parseInt(cell.dataset.oldState);
+
+        const neighbours = [
+          document.querySelector(`.cell[data-row="${row - 1}"][data-col="${col - 1}"]`),
+          document.querySelector(`.cell[data-row="${row - 1}"][data-col="${col}"]`),
+          document.querySelector(`.cell[data-row="${row - 1}"][data-col="${col + 1}"]`),
+
+          document.querySelector(`.cell[data-row="${row}"][data-col="${col - 1}"]`),
+          document.querySelector(`.cell[data-row="${row}"][data-col="${col + 1}"]`),
+
+          document.querySelector(`.cell[data-row="${row + 1}"][data-col="${col - 1}"]`),
+          document.querySelector(`.cell[data-row="${row + 1}"][data-col="${col}"]`),
+          document.querySelector(`.cell[data-row="${row + 1}"][data-col="${col + 1}"]`)
+        ];
+        let score = 0;
+        neighbours.forEach(function (neighbour) {
+          if (neighbour !== null && neighbour.dataset.oldState === "1")
+            score++;
+        });
+        if (currentState === 0) {
+          // Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+          if (score === 3)
+            cell.dataset.newState = 1;
+        }
+        else {
+          // Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+          if (score < 1)
+            cell.dataset.newState = 0;
+          // Any live cell with two or three live neighbours lives on to the next generation.
+          if (score === 2 || score === 3)
+            cell.dataset.newState = 1;
+          // Any live cell with more than three live neighbours dies, as if by overpopulation.
+          if (score > 3)
+            cell.dataset.newState = 0;
+        }
+      });
+      document.querySelectorAll(".cell").forEach(function (cell) {
+        cell.dataset.oldState=cell.dataset.newState;
+      });
+    }
+
+    setInterval(defineNewState, 500);
+
+
+  </script>
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+    }
+
+    #grid {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .row {
+      flex: 1;
+      display: flex;
+    }
+
+    .cell {
+      flex: 1;
+      background: white;
+      border: 2px solid gray;
+    }
+
+    .cell[data-new-state='1'] {
+      background: black;
+    }
+  </style>
+</body>
+
+</html>
