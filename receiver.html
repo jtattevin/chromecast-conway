@@ -105,7 +105,7 @@
     context.addCustomMessageListener('urn:x-cast:setGrid', function (customEvent) {
       var newGrid=customEvent.data.grid;
       grid.forEach(function (cell, position){
-        cell.target.oldState = cell.target.newState = newGrid[position];
+        cell.target.dataset.oldState = cell.target.dataset.newState = newGrid[position] || 0;
       });
     });
 
