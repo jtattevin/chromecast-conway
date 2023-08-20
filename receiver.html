@@ -105,6 +105,10 @@
         cell.target.oldState = cell.target.newState = newGrid[position];
       });
     });
+
+    context.addCustomMessageListener('urn:x-cast:onGridSize',function(){});
+    context.addCustomMessageListener('urn:x-cast:onGrid',function(){});
+
     context.start();
   </script>
   <style>
