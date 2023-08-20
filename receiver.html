@@ -50,6 +50,12 @@
     let notChangedCount = 0;
     function defineNewState() {
       let changed = false;
+
+      grid.forEach(function (cell) {
+        cell.target.dataset.oldState = cell.target.dataset.newState;
+      });
+
+
       grid.forEach(function (cell) {
         let score = 0;
         cell.neighbours.forEach(function (neighbour) {
@@ -83,10 +89,6 @@
         }
       });
 
-
-      grid.forEach(function (cell) {
-        cell.target.dataset.oldState = cell.target.dataset.newState;
-      });
 
       if (!changed) {
         notChangedCount++;
@@ -164,6 +166,12 @@
 
     .cell[data-new-state='1'] {
       background: black;
+    }
+    .cell[data-old-state='1'][data-new-state='0'] {
+      background: darkred;
+    }
+    .cell[data-old-state='0'][data-new-state='1'] {
+      background: darkgreen;
     }
   </style>
 </body>
