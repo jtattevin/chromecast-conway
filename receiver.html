@@ -162,13 +162,14 @@
       flex: 1;
       background: white;
       border: 2px solid gray;
+      transition: 100ms;
     }
 
     .cell[data-new-state='1'] {
       background: black;
     }
     .cell[data-old-state='1'][data-new-state='0'] {
-      background: darkred;
+      background: #ffcbcb;
     }
     .cell[data-old-state='0'][data-new-state='1'] {
       background: darkgreen;
