@@ -48,6 +48,8 @@
 
     let grid = [];
     document.querySelectorAll(".cell").forEach(function (cell) {
+      const row = parseInt(cell.dataset.row);
+      const col = parseInt(cell.dataset.col);
       grid.push({
         target: cell,
         neighbours: [
