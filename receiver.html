@@ -65,12 +65,12 @@
           document.querySelector(`.cell[data-row="${row + 1}"][data-col="${col + 1}"]`)
         ].filter((cell) => cell !== null)
       });
-
+    });
 
       function defineNewState() {
         grid.forEach(function (cell) {
           let score = 0;
-          cell.target.forEach(function (neighbour) {
+          cell.neighbours.forEach(function (neighbour) {
             if (neighbour.dataset.oldState === "1") {
               score++;
             }
