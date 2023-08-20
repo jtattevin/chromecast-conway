@@ -47,7 +47,9 @@
       });
     });
 
+    let notChangedCount = 0;
     function defineNewState() {
+      let changed = false;
       grid.forEach(function (cell) {
         let score = 0;
         cell.neighbours.forEach(function (neighbour) {
@@ -57,25 +59,49 @@
         });
         if (cell.target.dataset.oldState === "0") {
           // Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-          if (score === 3)
+          if (score === 3) {
             cell.target.dataset.newState = 1;
+            changed = true;
+          }
         }
         else {
           // Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-          if (score < 2)
+          if (score < 2) {
             cell.target.dataset.newState = 0;
+            changed = true;
+          }
           // Any live cell with two or three live neighbours lives on to the next generation.
-          if (score === 2 || score === 3)
+          if (score === 2 || score === 3) {
             cell.target.dataset.newState = 1;
+            changed = true;
+          }
           // Any live cell with more than three live neighbours dies, as if by overpopulation.
-          if (score > 3)
+          if (score > 3) {
             cell.target.dataset.newState = 0;
+            changed = true;
+          }
         }
       });
 
 
       grid.forEach(function (cell) {
         cell.target.dataset.oldState = cell.target.dataset.newState;
+      });
+
+      if (!changed) {
+        notChangedCount++;
+
+        if (notChangedCount > 60) {
+          notChangedCount = 0;
+
+        }
+
+      }
+    }
+
+    function reset() {
+      grid.forEach(function (cell) {
+        cell.target.dataset.oldState = cell.target.dataset.newState = Math.round(Math.random());
       });
     }
 
@@ -84,12 +110,7 @@
 
 
     const context = cast.framework.CastReceiverContext.getInstance();
-    context.addCustomMessageListener('urn:x-cast:reset', function (customEvent) {
-      console.info(customEvent);
-      grid.forEach(function (cell) {
-        cell.target.dataset.oldState = cell.target.dataset.newState = Math.round(Math.random());
-      });
-    });
+    context.addCustomMessageListener('urn:x-cast:reset', reset);
 
     context.addCustomMessageListener('urn:x-cast:getGridSize', function (customEvent) {
       context.sendCustomMessage('urn:x-cast:onGridSize', undefined, {
@@ -103,16 +124,19 @@
     });
 
     context.addCustomMessageListener('urn:x-cast:setGrid', function (customEvent) {
-      var newGrid=customEvent.data.grid;
-      grid.forEach(function (cell, position){
+      var newGrid = customEvent.data.grid;
+      grid.forEach(function (cell, position) {
         cell.target.dataset.oldState = cell.target.dataset.newState = newGrid[position] || 0;
       });
     });
 
-    context.addCustomMessageListener('urn:x-cast:onGridSize',function(){});
-    context.addCustomMessageListener('urn:x-cast:onGrid',function(){});
+    context.addCustomMessageListener('urn:x-cast:onGridSize', function () { });
+    context.addCustomMessageListener('urn:x-cast:onGrid', function () { });
 
-    context.start();
+    const options = new cast.framework.CastReceiverOptions();
+    options.disableIdleTimeout = true;
+
+    context.start(options);
   </script>
   <style>
     body {
