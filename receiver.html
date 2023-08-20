@@ -62,7 +62,7 @@
         }
         else {
           // Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-          if (score < 1)
+          if (score < 2)
             cell.target.dataset.newState = 0;
           // Any live cell with two or three live neighbours lives on to the next generation.
           if (score === 2 || score === 3)
