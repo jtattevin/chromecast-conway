@@ -21,6 +21,9 @@
     };
 
     let session = null;
+    let gridRow = null;
+    let gridCol = null;
+    let grid = [];
     function initializeCastApi() {
       const instance = cast.framework.CastContext.getInstance();
 
@@ -45,12 +48,20 @@
       }
     }
 
-    function onGridSize(event) {
-      console.info(event);
+    function onGridSize(event, message) {
+      const data = JSON.parse(message)
+      gridRow = data.row;
+      gridCol = data.col;
+      grid = [];
+      for (let i = 0; i < gridRow; i++) {
+        for (let j = 0; j < gridCol; j++) {
+          grid.push(0);
+        }
+      }
     }
 
-    function onGrid(event) {
-      console.info(event);
+    function onGrid(event, message) {
+      grid = JSON.parse(message);
     }
 
   </script>
