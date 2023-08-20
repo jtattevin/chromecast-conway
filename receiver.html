@@ -90,16 +90,20 @@
         cell.target.dataset.oldState = cell.target.dataset.newState = Math.round(Math.random());
       });
     });
+
     context.addCustomMessageListener('urn:x-cast:getGridSize', function (customEvent) {
       context.sendCustomMessage('urn:x-cast:onGridSize', undefined, {
         col: colCount,
         row: rowCount
       });
     });
+
     context.addCustomMessageListener('urn:x-cast:getGrid', function (customEvent) {
       context.sendCustomMessage('urn:x-cast:onGrid', undefined, grid.map((cell) => cell.target.dataset.newState));
     });
+
     context.addCustomMessageListener('urn:x-cast:setGrid', function (customEvent) {
+      console.info(customEvent);
       var newGrid=customEvent.data;
       grid.forEach(function (cell, position){
         cell.target.oldState = cell.target.newState = newGrid[position];
