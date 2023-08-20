@@ -8,7 +8,10 @@
 </head>
 
 <body>
-  <google-cast-launcher></google-cast-launcher>
+  <div style="max-height:64px">
+    <google-cast-launcher></google-cast-launcher>
+  </div>
+  <button onclick="reset()">reset</button>
 
   <script>
     window['__onGCastApiAvailable'] = function (isAvailable) {
@@ -17,12 +20,39 @@
       }
     };
 
-    initializeCastApi = function () {
-      cast.framework.CastContext.getInstance().setOptions({
+    let session = null;
+    function initializeCastApi() {
+      const instance = cast.framework.CastContext.getInstance()
+
+      instance.setOptions({
         receiverApplicationId: 'E6D1A215',
         autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
       });
+
+      instance.addEventListener(cast.framework.CastContextEventType.SESSION_STATE_CHANGED, function (event) {
+        session = event.session;
+        if (session !== null) {
+          session.addMessageListener("urn:x-cast:onGridSize", onGridSize);
+          session.addMessageListener("urn:x-cast:onGrid", onGrid);
+          session.sendMessage('urn:x-cast:getGridSize', {});
+        }
+      });
     };
+
+    function reset() {
+      if (session !== null) {
+        session.sendMessage('urn:x-cast:reset', {});
+      }
+    }
+
+    function onGridSize(event) {
+      console.info(event);
+    }
+
+    function onGrid(event) {
+      console.info(event);
+    }
+
   </script>
   <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 
