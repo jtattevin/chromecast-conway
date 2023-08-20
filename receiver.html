@@ -5,26 +5,6 @@
 </head>
 
 <body style="color: white">
-  <script>
-    cast.framework.CastReceiverContext.getInstance().start();
-  </script>
-
-
-
-  <!-- <div>Hello World</div>
-  <div id="message"></div>
-   -->
-  <script>
-    // const context = cast.framework.CastReceiverContext.getInstance();
-    // context.addCustomMessageListener('urn:x-cast:ch.cimnine.cromecast-test.text', function (customEvent) {
-    //   if (customEvent.data.type == "message") {
-    //     document.getElementById("message").innerHTML = customEvent.data.text;
-    //   }
-    // });
-    // context.start();
-  </script>
-
-
   <div id="grid"></div>
   <script>
     const targetSize = 30;
@@ -102,6 +82,15 @@
       setInterval(defineNewState, 500);
 
 
+      
+    const context = cast.framework.CastReceiverContext.getInstance();
+    context.addCustomMessageListener('urn:x-cast:reset', function (customEvent) {
+      console.info(customEvent);
+      grid.forEach(function (cell) {
+        cell.target.dataset.oldState=cell.target.dataset.newState=Math.round(Math.random());
+      });
+    });
+    context.start();
   </script>
   <style>
     body {
