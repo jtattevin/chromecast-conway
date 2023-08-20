@@ -103,8 +103,7 @@
     });
 
     context.addCustomMessageListener('urn:x-cast:setGrid', function (customEvent) {
-      console.info(customEvent);
-      var newGrid=customEvent.data;
+      var newGrid=customEvent.data.grid;
       grid.forEach(function (cell, position){
         cell.target.oldState = cell.target.newState = newGrid[position];
       });
