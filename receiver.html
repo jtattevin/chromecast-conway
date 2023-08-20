@@ -90,6 +90,13 @@
         cell.target.dataset.oldState=cell.target.dataset.newState=Math.round(Math.random());
       });
     });
+    context.addCustomMessageListener('urn:x-cast:getSize', function (customEvent) {
+      console.info(customEvent);
+      return [
+        col:colCount,
+        row:rowCount
+      ];
+    });
     context.start();
   </script>
   <style>
