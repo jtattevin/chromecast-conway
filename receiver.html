@@ -50,7 +50,7 @@
     document.querySelectorAll(".cell").forEach(function (cell) {
       grid.push({
         target: cell,
-        neighbours =[
+        neighbours: [
           document.querySelector(`.cell[data-row="${row - 1}"][data-col="${col - 1}"]`),
           document.querySelector(`.cell[data-row="${row - 1}"][data-col="${col}"]`),
           document.querySelector(`.cell[data-row="${row - 1}"][data-col="${col + 1}"]`),
