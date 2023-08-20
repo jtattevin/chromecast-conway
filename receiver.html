@@ -46,13 +46,11 @@
       document.querySelector("#grid").appendChild(rowDiv);
     }
 
-    function defineNewState() {
-      document.querySelectorAll(".cell").forEach(function (cell) {
-        const row = parseInt(cell.dataset.row, 10);
-        const col = parseInt(cell.dataset.col, 10);
-        const currentState = parseInt(cell.dataset.oldState);
-
-        const neighbours = [
+    let grid = [];
+    document.querySelectorAll(".cell").forEach(function (cell) {
+      grid.push({
+        target: cell,
+        neighbours =[
           document.querySelector(`.cell[data-row="${row - 1}"][data-col="${col - 1}"]`),
           document.querySelector(`.cell[data-row="${row - 1}"][data-col="${col}"]`),
           document.querySelector(`.cell[data-row="${row - 1}"][data-col="${col + 1}"]`),
@@ -63,35 +61,43 @@
           document.querySelector(`.cell[data-row="${row + 1}"][data-col="${col - 1}"]`),
           document.querySelector(`.cell[data-row="${row + 1}"][data-col="${col}"]`),
           document.querySelector(`.cell[data-row="${row + 1}"][data-col="${col + 1}"]`)
-        ];
-        let score = 0;
-        neighbours.forEach(function (neighbour) {
-          if (neighbour !== null && neighbour.dataset.oldState === "1")
-            score++;
-        });
-        if (currentState === 0) {
-          // Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-          if (score === 3)
-            cell.dataset.newState = 1;
-        }
-        else {
-          // Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-          if (score < 1)
-            cell.dataset.newState = 0;
-          // Any live cell with two or three live neighbours lives on to the next generation.
-          if (score === 2 || score === 3)
-            cell.dataset.newState = 1;
-          // Any live cell with more than three live neighbours dies, as if by overpopulation.
-          if (score > 3)
-            cell.dataset.newState = 0;
-        }
+        ].filter((cell) => cell !== null)
       });
-      document.querySelectorAll(".cell").forEach(function (cell) {
-        cell.dataset.oldState=cell.dataset.newState;
-      });
-    }
 
-    setInterval(defineNewState, 500);
+
+      function defineNewState() {
+        grid.forEach(function (cell) {
+          let score = 0;
+          cell.target.forEach(function (neighbour) {
+            if (neighbour.dataset.oldState === "1") {
+              score++;
+            }
+          });
+          if (cell.target.dataset.oldState === "0") {
+            // Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+            if (score === 3)
+              cell.target.dataset.newState = 1;
+          }
+          else {
+            // Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+            if (score < 1)
+              cell.target.dataset.newState = 0;
+            // Any live cell with two or three live neighbours lives on to the next generation.
+            if (score === 2 || score === 3)
+              cell.target.dataset.newState = 1;
+            // Any live cell with more than three live neighbours dies, as if by overpopulation.
+            if (score > 3)
+              cell.target.dataset.newState = 0;
+          }
+        });
+
+
+        grid.forEach(function (cell) {
+          cell.target.dataset.oldState = cell.target.dataset.newState;
+        });
+      }
+
+      setInterval(defineNewState, 500);
 
 
   </script>
